@@ -1,11 +1,13 @@
 import React from 'react';
 import CartWidget from '../CartWidget/CartWidget';
 import "./NavBar.css";
+import {NavLink} from 'react-router-dom';
 
 
 const NavBar = () => {
+  const setLinkColor = ({ isActive }) => (isActive ? { color: 'black' } : { color: '#0000008c' });
     return (
-        <nav className='navbar navbar-expand-lg bg-ligth p-3'>
+  <nav className='navbar navbar-expand-lg bg-ligth p-3'>
       <div className='container'>
         <button
           className='navbar-toggler'
@@ -16,27 +18,31 @@ const NavBar = () => {
           aria-expanded='false'
           aria-label='Toggle navigation'
         >
-          <span className='navbar-toggler-icon'></span>
+        <span className='navbar-toggler-icon'></span>
         </button>
-        <a className='navbar-brand' href='/'>
+        <a className='navbar-brand' to='/'>
           PhoneStation
         </a>
         <div className='collapse navbar-collapse' id='navbarTogglerDemo03'>
           <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
             <li className='nav-item'>
-              <a className='nav-link active' aria-current='page' href='/'>
+              <NavLink className='nav-link active' aria-current='page' to='/'>
                 Inicio
-              </a>
+              </NavLink>
             </li>
-            <li className='nav-item'>
-              <a className='nav-link' href='/'>
+            <li className='nav-item dropdown'>
+              <NavLink className='nav-link dropdown-toggle' to='/' role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Productos
-              </a>
+              </NavLink>
+              <ul class="dropdown-menu">
+                <li><NavLink class="dropdown-item" style={setLinkColor} to="/category/macbooks">MackBooks</NavLink></li>
+                <li><NavLink class="dropdown-item" style={setLinkColor} to="/category/iphones">Iphones</NavLink></li>
+              </ul>
             </li>
             <li className='nav-item'>
-              <a className='nav-link' href='/'>
+              <NavLink className='nav-link' to='/'>
                 Contacto
-              </a>
+              </NavLink>
             </li>
           </ul>
           <CartWidget />

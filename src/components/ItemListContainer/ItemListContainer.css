@@ -1,0 +1,12 @@
+.cards{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 1rem 1%;
+    justify-content: center;
+}
+
+.cardLink{
+    text-decoration: none;
+    color: black;
+}
