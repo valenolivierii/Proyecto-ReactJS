@@ -1,30 +1,23 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import products from "../../productos.json";
-import "./ItemDetailContainer.css";
-import Counter from "../Counter/Counter";
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router'
+import useFirebase from '../../hooks/UseFirebase'
+import ItemDetail from '../ItemDetail/ItemDetail'
+
 
 const ItemDetailContainer = () => {
-  const { id } = useParams()
 
-  const [{ img, title, price }] = products.cards.filter(
-    (item) => item.id === id
-  )
-  return (
-    <div className="itemDetail">
-      <div className="divImg">
-        <img src={img} alt="" />
-      </div>
-      <div className="divTitle">
+    const {id} = useParams()
+    const {producto,fetchGetIndividualProduct} = useFirebase()
+
+    useEffect(() => {
+        fetchGetIndividualProduct({id})
+    }, [])
+
+    return (
         <div>
-          <h5>{title}</h5>
-          <p className="price">U$D {price}</p>
+           {producto && <ItemDetail item={producto}/>}
         </div>
-        <Counter />
-        <button type="button" className="btnComprar">Agregar al carrito</button>
-      </div>
-    </div>
-  );
-};
+    )
+}
 
-export default ItemDetailContainer;
+export default ItemDetailContainer

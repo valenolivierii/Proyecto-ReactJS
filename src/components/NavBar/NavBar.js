@@ -1,6 +1,5 @@
 import React from 'react';
 import CartWidget from '../CartWidget/CartWidget';
-import "./NavBar.css";
 import {NavLink} from 'react-router-dom';
 
 
@@ -35,14 +34,9 @@ const NavBar = () => {
                 Productos
               </NavLink>
               <ul class="dropdown-menu">
-                <li><NavLink class="dropdown-item" style={setLinkColor} to="/category/macbooks">MackBooks</NavLink></li>
-                <li><NavLink class="dropdown-item" style={setLinkColor} to="/category/iphones">Iphones</NavLink></li>
+                <li><NavLink class="dropdown-item" style={setLinkColor} to="/productos/macbooks">MackBooks</NavLink></li>
+                <li><NavLink class="dropdown-item" style={setLinkColor} to="/productos/iphones">Iphones</NavLink></li>
               </ul>
-            </li>
-            <li className='nav-item'>
-              <NavLink className='nav-link' to='/'>
-                Contacto
-              </NavLink>
             </li>
           </ul>
           <CartWidget />

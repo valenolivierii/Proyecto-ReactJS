@@ -1,19 +1,27 @@
-import React from "react";
-import Card from "../Card/Card";
-import products from "../../productos.json";
-import "./ItemListContainer.css";
-import { useParams } from 'react-router-dom';
-const ItemListContainer = () => {
-  const {categoryid} = useParams();
+import React, { useEffect} from "react";
+import { GlobalProvider } from "../../context/GlobalContext";
+import useFirebase from "../../hooks/UseFirebase";
+import ItemList from "../ItemList/ItemList";
+const ItemListContainer = ({ filter }) => {
 
-  const cards = products.cards;
-  const filtroCategoria = categoryid ? cards.filter(item => item.category === categoryid) : cards;
+
+  const { productos,fetchGetDataCollection } = useFirebase();
+  const { buscar } = GlobalProvider();
+
+  useEffect(() => {
+    fetchGetDataCollection();
+  },[]);
+
+  const filtered = filter
+    ? productos.filter((e) => e.categoria === filter)
+    : productos;
+  const busqueda = filtered.filter((f) =>
+    f.nombre.toLocaleLowerCase().includes(buscar.toLocaleLowerCase())
+  );
 
   return (
-    <div className="cards">
-      {filtroCategoria.map(({ id, img, title, price, freeShip }) => (
-          <Card key={id} id={id} img={img} title={title} price={price} freeShip={freeShip} />
-      ))}
+    <div>
+      <ItemList items={busqueda} />
     </div>
   );
 };
