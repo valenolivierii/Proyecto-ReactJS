@@ -1,17 +1,31 @@
-import React from 'react'
-import Item from '../Item/Item'
+import { useEffect } from 'react';
+import useFirebase from '../../hook/useFirebase';
+import Item from '../Item/Item';
+import './styles.css';
 
-const ItemList = ({items}) => {
+const ItemList = (props) => {
+  const { id } = props;
+  const { products, getProducts, filterProducts, filteredProducts } = useFirebase();
+
+  useEffect(() => {
+    !id ? getProducts() : filterProducts(id);
+  }, [id]);
+
+  const renderItems = !id ? products : filteredProducts;
+  const items = renderItems.map(({ id, title, price, img, quantity }) => {
     return (
-        <div className="row p-2  p-lg-5 full-height align-items-center">
-         { items && items.map((elemento) => (
-             <Item 
-             key={elemento.id}
-             item={elemento}
-             />
-         ))} 
-        </div>
-    )
-}
+      <Item
+        key={id}
+        id={id}
+        title={title}
+        price={price}
+        img={img}
+        stock={quantity}
+      />
+    );
+  });
 
-export default ItemList
+  return <div className='container'>{items}</div>;
+};
+
+export default ItemList;

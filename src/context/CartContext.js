@@ -1,47 +1,38 @@
-import { createContext, useContext, useState } from "react";
-import { unificarItems, verificaSiExisteEnCarrito } from "../helpers";
-import { GlobalProvider } from "./GlobalContext";
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { CartContext } from './CartProvider';
 
-const CartContext = createContext();
-
-export const CartProvider = () => useContext(CartContext);
-
-const CartState = ({ children }) => {
-  const { setMostrarAlerta } = GlobalProvider();
-
-  const [carrito, setCarrito] = useState([]);
-
-  const agregarAlCarrito = (item) => {
-    if (verificaSiExisteEnCarrito(carrito, item)) {
-      setCarrito(unificarItems(carrito, item));
-      setMostrarAlerta(true);
-      return;
-    }
-    setCarrito([...carrito, item]);
-    setMostrarAlerta(true);
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(1);
+  const [total, setTotal] = useState(0);
+  
+  const isInCart = (obj) => cart.find((el) => el.item.id === obj.id);
+  const addItem = (item, quantity) => {
+    !isInCart(item) && setCart([...cart, { item, quantity }]);
+    setTotal((prevState) => prevState + item.price * quantity);
   };
-
-  const sacarDelCarrito = (id) => {
-    let nuevoCarrito = carrito.filter((e) => e.id !== id);
-    setCarrito(nuevoCarrito);
+  const removeItem = (itemId) => {
+    const removedItem = cart.find((cartItem) => cartItem.item.id === itemId);
+    const filteredCart = cart.filter((itemCart) => itemCart.item.id !== itemId);
+    setCart([...filteredCart]);
+    setTotal((prevState) => prevState - removedItem.item.price * removedItem.quantity);
+    toast.success('Item eliminado');
   };
-
-  const limpiarTodoElCarrito = () => {
-    setCarrito([]);
+  const updateQuantity = (quantity) => setSelectedItems(quantity);
+  const clear = () => setCart([]);
+  const getTotal = () => {
+    const total = cart
+      .map((cartEl) => Number(cartEl.item.price) * cartEl.quantity, 0)
+      .reduce((curr, prev) => curr + prev, 0);
+    setTotal(total);
   };
-
   return (
     <CartContext.Provider
-      value={{
-        carrito,
-        agregarAlCarrito,
-        limpiarTodoElCarrito,
-        sacarDelCarrito,
-      }}
+      value={{ addItem, removeItem, clear, updateQuantity, selectedItems, cart, getTotal, total, setCart, setTotal}}
     >
       {children}
     </CartContext.Provider>
   );
 };
 
-export default CartState;

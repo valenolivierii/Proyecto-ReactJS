@@ -1,29 +1,9 @@
-import React, { useEffect} from "react";
-import { GlobalProvider } from "../../context/GlobalContext";
-import useFirebase from "../../hooks/UseFirebase";
-import ItemList from "../ItemList/ItemList";
-const ItemListContainer = ({ filter }) => {
+import { useParams } from 'react-router-dom';
+import ItemList from '../ItemList/ItemList';
 
-
-  const { productos,fetchGetDataCollection } = useFirebase();
-  const { buscar } = GlobalProvider();
-
-  useEffect(() => {
-    fetchGetDataCollection();
-  },[]);
-
-  const filtered = filter
-    ? productos.filter((e) => e.categoria === filter)
-    : productos;
-  const busqueda = filtered.filter((f) =>
-    f.nombre.toLocaleLowerCase().includes(buscar.toLocaleLowerCase())
-  );
-
-  return (
-    <div>
-      <ItemList items={busqueda} />
-    </div>
-  );
+const ItemListContainer = () => {
+  const { id } = useParams();
+  return <ItemList id={id} />;
 };
 
 export default ItemListContainer;

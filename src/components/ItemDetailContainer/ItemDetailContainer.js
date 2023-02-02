@@ -1,23 +1,18 @@
-import React, { useEffect } from 'react'
-import { useParams } from 'react-router'
-import useFirebase from '../../hooks/UseFirebase'
-import ItemDetail from '../ItemDetail/ItemDetail'
-
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import useFirebase from '../../hook/useFirebase';
+import ItemDetail from '../ItemDetail/ItemDetail';
+import './styles.css';
 
 const ItemDetailContainer = () => {
+  const { id } = useParams();
+  const { product, getProduct } = useFirebase();
 
-    const {id} = useParams()
-    const {producto,fetchGetIndividualProduct} = useFirebase()
+  useEffect(() => {
+    getProduct(id);
+  }, []);
 
-    useEffect(() => {
-        fetchGetIndividualProduct({id})
-    }, [])
+  return <ItemDetail product={product} />;
+};
 
-    return (
-        <div>
-           {producto && <ItemDetail item={producto}/>}
-        </div>
-    )
-}
-
-export default ItemDetailContainer
+export default ItemDetailContainer;

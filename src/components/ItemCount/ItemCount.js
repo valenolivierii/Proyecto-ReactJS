@@ -1,79 +1,68 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { CartProvider } from "../../context/CartContext";
-import { verificaSiExisteEnCarrito } from "../../helpers";
+import React, { useContext } from 'react';
+import { CartContext } from '../../context/CartProvider';
 
-const ItemCount = ({ item }) => {
+const ItemCount = ({ stock }) => {
+  const { updateQuantity, selectedItems } = useContext(CartContext);
 
-  const { carrito, agregarAlCarrito } = CartProvider();
-  const {stock} = item
-  const [cantidad, setCantidad] = useState(1);
-
-  let producto = item && {
-    ...item,
-    cantidad,
+  const onAdd = () => {
+    updateQuantity(selectedItems + 1);
   };
-
-  const alAgregarAlCarrito = () => {
-    if (stock < 0 || cantidad <= 0) return;
-    agregarAlCarrito(producto);
+  const onSubtract = () => {
+    updateQuantity(selectedItems - 1);
   };
-
-  const sumarCantidad = () => {
-    if (stock - 1 > cantidad) {
-      setCantidad(cantidad + 1);
-    }
-  };
-
-  const restarCantidad = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
-    }
+  const handleChange = (e) => {
+    const value = Number(e.target.value);
+    updateQuantity(value);
   };
 
   return (
-    <div>
-      {!verificaSiExisteEnCarrito(carrito, item) ? (
-        <>
-          <div className="row border mx-0">
-            <div className="col-9 text-uppercase fs-3">disponible</div>
-            <div className="col-3 text-center fs-3">{item.stock - 1}</div>
-          </div>
-          <div className="row border my-4 mx-auto d-flex align-items-center">
-            <div className="col col-3 d-flex">
-              <button
-                onClick={restarCantidad}
-                className="btn px-4 mx-auto text-danger fs-2"
-              >
-                -
-              </button>
-            </div>
-            <div className="col col-6 text-center fs-5">{cantidad}</div>
-            <div className="col col-3 d-flex">
-              <button
-                onClick={sumarCantidad}
-                className="btn  px-3 text-success mx-auto fs-2"
-              >
-                +
-              </button>
-            </div>
-          </div>
-          <button
-            className="btn btn-warning w-100 my-3 text-uppercase"
-            onClick={() => alAgregarAlCarrito(producto)}
-          >
-            agregar al carrito
-          </button>
-        </>
-      ) : (
-        <Link className="btn btn-success w-100 my-3 text-uppercase" to="/cart">
-          ir al carrito
-        </Link>
-      )}
-
-      <Link to="/" className="btn btn-dark w-100 my-3 text-uppercase">
-        volver a comprar
-      </Link>
+    <div className='d-flex justify-content-center'>
+      <button
+        className='btn btn-dark'
+        onClick={onSubtract}
+        disabled={selectedItems > 1 ? false : true}
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='16'
+          height='16'
+          fill='currentColor'
+          className='bi bi-dash-lg'
+          viewBox='0 0 16 16'
+        >
+          <path
+            fillRule='evenodd'
+            d='M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z'
+          />
+        </svg>
+      </button>
+      <input
+        type='number'
+        className='form-control'
+        value={selectedItems}
+        onChange={handleChange}
+        style={{ textAlign: 'center' }}
+        disabled={selectedItems > 0 && selectedItems < stock ? false : true}
+      />
+      <button
+        className='btn btn-dark'
+        onClick={onAdd}
+        disabled={selectedItems > 0 && selectedItems < stock ? false : true}
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='16'
+          height='16'
+          fill='currentColor'
+          className='bi bi-plus-lg'
+          viewBox='0 0 16 16'
+        >
+          <path
+            fillRule='evenodd'
+            d='M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z'
+          />
+        </svg>
+      </button>
     </div>
   );
 };
